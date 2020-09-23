@@ -56,10 +56,10 @@ export class BenkhardCoreStack extends cdk.Stack {
 
     loadBalancerFargateService.taskDefinition.addVolume(efsVolume);
 
-    loadBalancerFargateService.taskDefinition.defaultContainer?.addMountPoints({
-      containerPath: '/var/jenkins_home',
-      readOnly: false,
-      sourceVolume: efsVolume.name
-    })
+    // loadBalancerFargateService.taskDefinition.defaultContainer?.addMountPoints({
+    //   containerPath: '/var/jenkins_home',
+    //   readOnly: false,
+    //   sourceVolume: efsVolume.name
+    // });
   }
 }

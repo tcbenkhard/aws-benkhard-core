@@ -44,5 +44,6 @@
   },
   "ssm:account=111972343318:parameterName=/com/benkhard/wildcard-certificate-cloudfront:region=eu-west-1": "arn:aws:acm:us-east-1:111972343318:certificate/ded21ccf-b3c4-4ae1-9146-5d3a11fab2bb",
   "ssm:account=111972343318:parameterName=/com/benkhard/public-hosted-zone-id:region=eu-west-1": "Z2F4GXMXOBKJWA",
-  "ssm:account=111972343318:parameterName=benkhard-com-certificate-arn:region=eu-west-1": "arn:aws:acm:eu-west-1:111972343318:certificate/2eb312e3-ccaf-4ccd-a45d-849824285687"
+  "ssm:account=111972343318:parameterName=benkhard-com-certificate-arn:region=eu-west-1": "arn:aws:acm:eu-west-1:111972343318:certificate/2eb312e3-ccaf-4ccd-a45d-849824285687",
+  "ssm:account=111972343318:parameterName=/com/benkhard/wildcard-certificate:region=eu-west-1": "arn:aws:acm:eu-west-1:111972343318:certificate/2eb312e3-ccaf-4ccd-a45d-849824285687"
 }
