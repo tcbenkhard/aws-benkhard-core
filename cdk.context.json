@@ -1,0 +1,48 @@
+{
+  "vpc-provider:account=111972343318:filter.isDefault=true:region=eu-west-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-a69373df",
+    "vpcCidrBlock": "172.31.0.0/16",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-aaad32f0",
+            "cidr": "172.31.32.0/20",
+            "availabilityZone": "eu-west-1a",
+            "routeTableId": "rtb-f9fcf780"
+          },
+          {
+            "subnetId": "subnet-f5feac93",
+            "cidr": "172.31.0.0/20",
+            "availabilityZone": "eu-west-1b",
+            "routeTableId": "rtb-f9fcf780"
+          },
+          {
+            "subnetId": "subnet-9d103dd5",
+            "cidr": "172.31.16.0/20",
+            "availabilityZone": "eu-west-1c",
+            "routeTableId": "rtb-f9fcf780"
+          }
+        ]
+      },
+      {
+        "name": "Private",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-05d589052f65ae949",
+            "cidr": "172.31.48.0/20",
+            "availabilityZone": "eu-west-1a",
+            "routeTableId": "rtb-f9fcf780"
+          }
+        ]
+      }
+    ]
+  },
+  "ssm:account=111972343318:parameterName=/com/benkhard/wildcard-certificate-cloudfront:region=eu-west-1": "arn:aws:acm:us-east-1:111972343318:certificate/ded21ccf-b3c4-4ae1-9146-5d3a11fab2bb",
+  "ssm:account=111972343318:parameterName=/com/benkhard/public-hosted-zone-id:region=eu-west-1": "Z2F4GXMXOBKJWA",
+  "ssm:account=111972343318:parameterName=benkhard-com-certificate-arn:region=eu-west-1": "arn:aws:acm:eu-west-1:111972343318:certificate/2eb312e3-ccaf-4ccd-a45d-849824285687"
+}
