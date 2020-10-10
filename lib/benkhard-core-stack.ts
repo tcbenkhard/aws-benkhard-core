@@ -1,12 +1,8 @@
 import * as cdk from '@aws-cdk/core';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as ssm from '@aws-cdk/aws-ssm';
-import {IVolume, Volume, Vpc} from "@aws-cdk/aws-ec2";
-import * as acm from '@aws-cdk/aws-certificatemanager';
-import * as ecs_patterns from "@aws-cdk/aws-ecs-patterns";
-import * as route53 from '@aws-cdk/aws-route53';
-import {Duration} from "@aws-cdk/core";
-import * as efs from '@aws-cdk/aws-efs';
+import {UserPool} from '@aws-cdk/aws-cognito';
+import {Vpc} from "@aws-cdk/aws-ec2";
 
 export class BenkhardCoreStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -17,49 +13,29 @@ export class BenkhardCoreStack extends cdk.Stack {
       vpc,
     });
 
-    const certificateArn = ssm.StringParameter.valueFromLookup(this, '/com/benkhard/wildcard-certificate')
-    const certificate = acm.Certificate.fromCertificateArn(this, 'WildcardCertificate', certificateArn);
-
-    const hostedZoneId = ssm.StringParameter.valueFromLookup(this, '/com/benkhard/public-hosted-zone-id');
-    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(this, 'PublicHostedZone', { hostedZoneId: hostedZoneId, zoneName: 'benkhard.com' });
-
-    const fileSystem = new efs.FileSystem(this, 'EfsFileSystem', {
-      vpc,
-      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE,
+    new ssm.StringParameter(this, 'PlatformClusterArnSSMParameter', {
+      parameterName: '/com/benkhard/platform-cluster-arn',
+      description: 'The arn of the Platform ECS cluster.',
+      stringValue: cluster.clusterArn
     });
 
-    const loadBalancerFargateService = new ecs_patterns.ApplicationLoadBalancedFargateService(this, "JenkinsService", {
-      cluster: cluster, // Required
-      cpu: 256, // Default is 256
-      desiredCount: 1, // Default is 1
-      taskImageOptions: { image: ecs.ContainerImage.fromRegistry("jenkins/jenkins"), containerPort: 8080,  },
-      memoryLimitMiB: 1024, // Default is 512
-      publicLoadBalancer: true, // Default is false
-      assignPublicIp: true,
-      certificate: certificate,
-      healthCheckGracePeriod: Duration.minutes(5),
-      domainName: 'jenkins.benkhard.com',
-      domainZone: hostedZone,
+    new ssm.StringParameter(this, 'PlatformClusterNameSSMParameter', {
+      parameterName: '/com/benkhard/platform-cluster-name',
+      description: 'The name of the Platform ECS cluster.',
+      stringValue: cluster.clusterArn
     });
 
-    loadBalancerFargateService.targetGroup.configureHealthCheck({
-      path: '/login'
-    });
+    const userPool = new UserPool(this, 'BenkhardUserPool', {
+      selfSignUpEnabled: true,
+      userPoolName: 'benkhard-userpool',
+      signInAliases: { username: true, email: true },
+      autoVerify: { email: true, phone: true }
+    })
 
-    const efsVolume: ecs.Volume = {
-      name: 'efs',
-      efsVolumeConfiguration: {
-        fileSystemId: fileSystem.fileSystemId,
-        rootDirectory: "/jenkins"
-      }
-    };
-
-    loadBalancerFargateService.taskDefinition.addVolume(efsVolume);
-
-    // loadBalancerFargateService.taskDefinition.defaultContainer?.addMountPoints({
-    //   containerPath: '/var/jenkins_home',
-    //   readOnly: false,
-    //   sourceVolume: efsVolume.name
-    // });
+    new ssm.StringParameter(this, 'UserPoolIdSSMParameter', {
+      parameterName: '/com/benkhard/cognito/benkhard-userpool-id',
+      description: 'The id of the benkhard userpool',
+      stringValue: userPool.userPoolId
+    })
   }
 }
